@@ -8,7 +8,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 	
 native = "vietnamese" 
-SAVE_FOLDER = "D:\hoc\FPT\PET_PROJECT\cambridge-dictionary-audio-2.1" #để trống thì mặc định lưu tại folder hiện tại
+SAVE_FOLDER = r"D:\hoc\FPT\PET_PROJECT\cambridge-dictionary-audio-2.1" #để trống thì mặc định lưu tại folder hiện tại
 # Khai báo các hằng số mã màu để dễ quản lý và tái sử dụng
 C_CYAN = "\033[96m"   # Xanh dương nhạt
 C_GREEN = "\033[92m"  # Xanh lá
@@ -25,7 +25,7 @@ if SAVE_FOLDER and not os.path.exists(SAVE_FOLDER):
 	os.makedirs(SAVE_FOLDER)
 
 def commands(word):
-	global playing
+	global playing, folder_path
 	if word == '/m':
 		playing = 1 - playing
 
@@ -41,6 +41,29 @@ def commands(word):
 			os.remove(folder_path + '\\' + mp3_file)
 
 		print("\033[93mĐã xóa tất cả file audio\033[93m\n")
+	elif word == '/cp':
+		print(f"{C_CYAN}Đường dẫn hiện tại: {C_YELLOW}{folder_path}{C_RESET}")
+		new_path = input(f'{C_GREEN}Nhập đường dẫn mới (để trống để giữ nguyên): {C_YELLOW}').strip()
+		print(C_RESET, end='')
+		if new_path:
+			# Loại bỏ dấu ngoặc kép bao quanh nếu người dùng dán từ Explorer
+			new_path = new_path.strip('"').strip("'")
+			if not os.path.exists(new_path):
+				try:
+					os.makedirs(new_path)
+					print(f"{C_GREEN}Đã tạo thư mục mới: {C_YELLOW}{new_path}{C_RESET}")
+				except Exception as e:
+					print(f"{C_RED}Lỗi: Không thể tạo thư mục '{new_path}': {e}{C_RESET}")
+					Start()
+					return 0
+			if not os.path.isdir(new_path):
+				print(f"{C_RED}Lỗi: '{new_path}' không phải là một thư mục hợp lệ.{C_RESET}")
+				Start()
+				return 0
+			folder_path = os.path.abspath(new_path)
+			print(f"{C_GREEN}✔ Đã đổi thư mục lưu thành: {C_YELLOW}{folder_path}{C_RESET}")
+		else:
+			print(f"{C_CYAN}Giữ nguyên đường dẫn: {C_YELLOW}{folder_path}{C_RESET}")
 	else:
 		print("\033[91mLệnh không hợp lệ\033[91m")
 
@@ -49,7 +72,7 @@ def commands(word):
 
 
 def Start():
-	global playing
+	global playing, folder_path
 
 	# Xác định màu sắc và text cho trạng thái linh hoạt
 	status_color = C_GREEN if playing else C_RED
@@ -58,8 +81,10 @@ def Start():
 	# In khối menu điều khiển
 	print(f"{C_CYAN}================ MENU ĐIỀU KHIỂN ================={C_RESET}")
 	print(f"{C_CYAN}▶ Trạng thái Auto-play: {status_color}[ {status_text} ]{C_RESET}")
+	print(f"{C_CYAN}▶ Lưu tại: {C_YELLOW}{folder_path}{C_RESET}")
 	print(f"{C_CYAN}▶ Nhập {C_YELLOW}[/m]{C_CYAN}      : Bật / Tắt âm thanh{C_RESET}")
 	print(f"{C_CYAN}▶ Nhập {C_YELLOW}[/r]{C_CYAN}      : Xóa toàn bộ file audio{C_RESET}")
+	print(f"{C_CYAN}▶ Nhập {C_YELLOW}[/cp]{C_CYAN}     : Đổi thư mục lưu audio{C_RESET}")
 	print(f"{C_CYAN}▶ Nhấn {C_YELLOW}[Ctrl+C]{C_CYAN}  : Thoát chương trình{C_RESET}")
 	print(f"{C_CYAN}=================================================={C_RESET}\n")
 

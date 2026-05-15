@@ -1,1 +1,1 @@
-pyinstaller --noconfirm --onefile --console --icon "logo.ico"  "main.py"
+pyinstaller --noconfirm --onefile --console --icon "Design\logo.ico"  "main.py"

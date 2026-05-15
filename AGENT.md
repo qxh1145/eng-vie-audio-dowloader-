@@ -9,7 +9,7 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
 
 *   **`main.py`**: Entry point của chương trình.
     *   Chạy vòng lặp CLI tương tác với người dùng.
-    *   Xử lý lệnh điều khiển: `/m` (bật/tắt tự động phát âm thanh), `/r` (xóa tất cả file `.mp3` trong thư mục lưu trữ).
+    *   Xử lý lệnh điều khiển: `/m` (bật/tắt tự động phát âm thanh), `/r` (xóa tất cả file `.mp3` trong thư mục lưu trữ), `/cp` (đổi thư mục lưu audio trong phiên làm việc).
     *   Gọi `Parser.py` để tải audio và lấy bản dịch.
     *   Sử dụng thư viện `playsound` để phát audio ngay sau khi tải.
     *   Cấu hình thư mục lưu trữ qua biến `SAVE_FOLDER` (mặc định lưu tại thư mục hiện tại nếu để trống).
@@ -39,3 +39,4 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
     *   Viết lại logic parse HTML trong `Parser.py` (`get_translation()`) để xử lý đúng cấu trúc trang `english-vietnamese` (tìm trực tiếp `def-block` và xử lý spacing với `get_text(" ", strip=True)`).
     *   Cập nhật `main.py` để hiển thị bản dịch rõ ràng, có cấu trúc (gom theo từ loại, đánh số định nghĩa Anh-Việt) kèm theo màu sắc terminal.
 5.  **Fix lỗi Encoding**: Thêm `sys.stdout.reconfigure(encoding='utf-8')` để tránh lỗi `UnicodeEncodeError` trên môi trường terminal Windows khi in ký tự tiếng Việt.
+6.  **Thêm lệnh `/cp` (Change Path)**: Cho phép người dùng đổi thư mục lưu file audio ngay trong phiên làm việc mà không cần sửa code. Hệ thống hiển thị đường dẫn hiện tại, nhận input đường dẫn mới, tự tạo thư mục nếu chưa tồn tại, và validate đầu vào.
