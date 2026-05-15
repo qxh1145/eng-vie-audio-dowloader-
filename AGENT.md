@@ -1,0 +1,41 @@
+# Cambridge Dictionary Audio - Agent Overview
+
+Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và các thay đổi gần đây để các AI agent có thể nhanh chóng nắm bắt ngữ cảnh.
+
+## 1. Mục đích dự án
+Đây là một công cụ CLI (Command Line Interface) bằng Python cho phép tải file audio phát âm (giọng UK) và tra cứu nghĩa (Anh-Việt) của từ vựng từ trang [dictionary.cambridge.org](https://dictionary.cambridge.org). 
+
+## 2. Cấu trúc Codebase
+
+*   **`main.py`**: Entry point của chương trình.
+    *   Chạy vòng lặp CLI tương tác với người dùng.
+    *   Xử lý lệnh điều khiển: `/m` (bật/tắt tự động phát âm thanh), `/r` (xóa tất cả file `.mp3` trong thư mục lưu trữ).
+    *   Gọi `Parser.py` để tải audio và lấy bản dịch.
+    *   Sử dụng thư viện `playsound` để phát audio ngay sau khi tải.
+    *   Cấu hình thư mục lưu trữ qua biến `SAVE_FOLDER` (mặc định lưu tại thư mục hiện tại nếu để trống).
+    *   Sử dụng `sys.stdout.reconfigure(encoding='utf-8')` để đảm bảo terminal Windows hiển thị đúng tiếng Việt.
+
+*   **`Parser.py`**: Module đảm nhiệm việc scraping dữ liệu từ Cambridge Dictionary.
+    *   Dùng `requests` và `bs4` (BeautifulSoup) để parse HTML.
+    *   `define(word, save_path, ...)`: Tìm link audio UK (`span` class `daud`), tải file mp3, in phiên âm IPA.
+    *   `get_translation(word, mode, ...)`: Scrape khối định nghĩa (`def-block`), trích xuất định nghĩa tiếng Anh và bản dịch tiếng Việt, gom nhóm theo từ loại (part of speech). Hàm sử dụng `.get_text(" ", strip=True)` để đảm bảo các text node bên trong có khoảng trắng hợp lý.
+
+*   **`combine.py`**: Xử lý trường hợp người dùng nhập một cụm từ (nhiều từ).
+    *   Tải audio của từng từ riêng lẻ thông qua `Parser.define`.
+    *   Sử dụng `pydub` (yêu cầu FFmpeg) để nối các file audio lại với nhau (`merge_and_normalize_audio`) và đồng bộ hóa âm lượng.
+    *   Sử dụng `alive_progress` để hiển thị thanh tiến trình khi xử lý.
+
+*   **Các file hỗ trợ**:
+    *   `requirements.txt`: Các thư viện phụ thuộc (`alive_progress`, `beautifulsoup4`, `playsound`, `pydub`, `Requests`).
+    *   `start.bat`: Script tiện ích để chạy chương trình nhanh (`python main.py`).
+    *   `compile.bat`: Dùng `pyinstaller` để đóng gói script thành file `.exe`.
+    *   `Design/`: Thư mục chứa tài nguyên UI như logo và ảnh/video demo.
+
+## 3. Lịch sử Thay đổi Gần đây (Changelog)
+1.  **Chuyển đổi ngôn ngữ dịch**: Đổi ngôn ngữ đích mặc định sang Tiếng Việt (`english-vietnamese`).
+2.  **Cấu hình thư mục lưu**: Thêm biến `SAVE_FOLDER` trong `main.py` để tùy chỉnh nơi lưu file `.mp3`.
+3.  **Fix lỗi Indentation & Scope**: Sửa lỗi thụt lề ở khối in Menu và đưa các biến `status_color`, `status_text` vào trong scope của hàm `Start()` để cập nhật đúng trạng thái `/m`.
+4.  **Cải tiến hiển thị bản dịch**: 
+    *   Viết lại logic parse HTML trong `Parser.py` (`get_translation()`) để xử lý đúng cấu trúc trang `english-vietnamese` (tìm trực tiếp `def-block` và xử lý spacing với `get_text(" ", strip=True)`).
+    *   Cập nhật `main.py` để hiển thị bản dịch rõ ràng, có cấu trúc (gom theo từ loại, đánh số định nghĩa Anh-Việt) kèm theo màu sắc terminal.
+5.  **Fix lỗi Encoding**: Thêm `sys.stdout.reconfigure(encoding='utf-8')` để tránh lỗi `UnicodeEncodeError` trên môi trường terminal Windows khi in ký tự tiếng Việt.
