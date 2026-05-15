@@ -6,9 +6,14 @@ import combine
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-	
+
+def clear_screen():
+	"""Xóa màn hình terminal, hỗ trợ đa nền tảng (Windows/macOS/Linux)."""
+	os.system('cls' if os.name == 'nt' else 'clear')
+
+
 native = "vietnamese" 
-SAVE_FOLDER = r"D:\hoc\FPT\PET_PROJECT\cambridge-dictionary-audio-2.1" #để trống thì mặc định lưu tại folder hiện tại
+SAVE_FOLDER = "" #để trống thì mặc định lưu tại folder hiện tại
 # Khai báo các hằng số mã màu để dễ quản lý và tái sử dụng
 C_CYAN = "\033[96m"   # Xanh dương nhạt
 C_GREEN = "\033[92m"  # Xanh lá
@@ -17,7 +22,7 @@ C_YELLOW = "\033[93m" # Vàng
 C_RESET = "\033[0m"   # Reset về màu mặc định của terminal
 
 
-os.system('cls')
+clear_screen()
 playing = 1
 folder_path = SAVE_FOLDER if SAVE_FOLDER else os.getcwd()
 
@@ -38,7 +43,7 @@ def commands(word):
 		mp3_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
 		for mp3_file in mp3_files:
 			print(f'\033[96m{mp3_file}\033[96m\033[92m đã được bay vào thùng rác')
-			os.remove(folder_path + '\\' + mp3_file)
+			os.remove(os.path.join(folder_path, mp3_file))
 
 		print("\033[93mĐã xóa tất cả file audio\033[93m\n")
 	elif word == '/cp':
@@ -96,16 +101,16 @@ def Start():
 		word = word.replace(ele, "")
 
 	if(len(word) == 0):
-		os.system('cls')
+		clear_screen()
 		Start()
 
 	if word[0] == '/':
 		commands(word)
 
-	os.system('cls')
+	clear_screen()
 	print(word)
 	
-	save_path = f"{folder_path}\\{word}.mp3" 
+	save_path = os.path.join(folder_path, f"{word}.mp3")
 	
 	print("\033[92mĐang tải..\033[92m")
 	
@@ -119,7 +124,7 @@ def Start():
 	else:
 		print("\033[91mKhông tìm thấy từ này\033[91m")
 		
-		if (combine.comb(word) and playing):
+		if (combine.comb(word, folder_path) and playing):
 			
 			playsound.playsound(save_path, True)
 

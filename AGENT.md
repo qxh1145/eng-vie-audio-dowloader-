@@ -12,8 +12,10 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
     *   Xử lý lệnh điều khiển: `/m` (bật/tắt tự động phát âm thanh), `/r` (xóa tất cả file `.mp3` trong thư mục lưu trữ), `/cp` (đổi thư mục lưu audio trong phiên làm việc).
     *   Gọi `Parser.py` để tải audio và lấy bản dịch.
     *   Sử dụng thư viện `playsound` để phát audio ngay sau khi tải.
-    *   Cấu hình thư mục lưu trữ qua biến `SAVE_FOLDER` (mặc định lưu tại thư mục hiện tại nếu để trống).
+    *   Cấu hình thư mục lưu trữ qua biến `SAVE_FOLDER` (mặc định `""`, fallback về `os.getcwd()`).
     *   Sử dụng `sys.stdout.reconfigure(encoding='utf-8')` để đảm bảo terminal Windows hiển thị đúng tiếng Việt.
+    *   Sử dụng hàm `clear_screen()` hỗ trợ đa nền tảng thay cho `os.system('cls')`.
+    *   Mọi xử lý đường dẫn đều dùng `os.path.join()` để tương thích cross-platform.
 
 *   **`Parser.py`**: Module đảm nhiệm việc scraping dữ liệu từ Cambridge Dictionary.
     *   Dùng `requests` và `bs4` (BeautifulSoup) để parse HTML.
@@ -24,6 +26,7 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
     *   Tải audio của từng từ riêng lẻ thông qua `Parser.define`.
     *   Sử dụng `pydub` (yêu cầu FFmpeg) để nối các file audio lại với nhau (`merge_and_normalize_audio`) và đồng bộ hóa âm lượng.
     *   Sử dụng `alive_progress` để hiển thị thanh tiến trình khi xử lý.
+    *   Hàm `comb()` nhận thêm tham số `folder_path` tùy chọn, mọi đường dẫn đều dùng `os.path.join()`.
 
 *   **Các file hỗ trợ**:
     *   `requirements.txt`: Các thư viện phụ thuộc (`alive_progress`, `beautifulsoup4`, `playsound`, `pydub`, `Requests`).
@@ -42,3 +45,9 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
 5.  **Fix lỗi Encoding**: Thêm `sys.stdout.reconfigure(encoding='utf-8')` để tránh lỗi `UnicodeEncodeError` trên môi trường terminal Windows khi in ký tự tiếng Việt.
 6.  **Thêm lệnh `/cp` (Change Path)**: Cho phép người dùng đổi thư mục lưu file audio ngay trong phiên làm việc mà không cần sửa code. Hệ thống hiển thị đường dẫn hiện tại, nhận input đường dẫn mới, tự tạo thư mục nếu chưa tồn tại, và validate đầu vào.
 7.  **Cấu hình `.gitignore`**: Thiết lập danh sách các file/thư mục không nên up lên GitHub, bao gồm các thư mục build của PyInstaller (`build/`, `dist/`), file spec, cache của Python (`__pycache__/`), môi trường ảo (`venv/`) và các file audio `.mp3` được tải về.
+8.  **Refactor Cross-platform**:
+    *   Thay thế toàn bộ nối chuỗi đường dẫn cứng bằng `\\` thành `os.path.join()` trong `main.py` và `combine.py`.
+    *   Thay thế `os.system('cls')` bằng hàm `clear_screen()` kiểm tra `os.name` để hỗ trợ cả Windows, macOS và Linux.
+    *   Đổi giá trị mặc định `SAVE_FOLDER` thành `""` (chuỗi rỗng), fallback về `os.getcwd()` để tránh lỗi đường dẫn không tồn tại trên máy khác.
+    *   Hàm `combine.comb()` nhận thêm tham số `folder_path` để sử dụng cùng thư mục lưu với `main.py`.
+    *   Bổ sung hướng dẫn cài FFmpeg trên macOS (`brew install ffmpeg`) và Linux (`sudo apt install ffmpeg`) vào `README.md`.

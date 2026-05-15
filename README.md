@@ -16,7 +16,19 @@
 
 Để chạy chương trình này bằng mã nguồn, máy tính của bạn cần cài đặt:
 - **Python 3.7+** (đã check "Add Python to PATH" khi cài đặt).
-- *(Tùy chọn)* **FFmpeg**: Cần thiết nếu bạn muốn sử dụng tính năng tra **cụm từ** (ghép nhiều file audio lại với nhau). Tải FFmpeg và thêm vào biến môi trường PATH của hệ điều hành.
+- *(Tùy chọn)* **FFmpeg**: Cần thiết nếu bạn muốn sử dụng tính năng tra **cụm từ** (ghép nhiều file audio lại với nhau).
+
+  **Cài đặt FFmpeg theo hệ điều hành:**
+  - **Windows**: Tải FFmpeg từ [ffmpeg.org](https://ffmpeg.org/download.html), giải nén và thêm thư mục `bin` vào biến môi trường `PATH`.
+  - **macOS**: Mở Terminal và chạy:
+    ```sh
+    brew install ffmpeg
+    ```
+    *(Yêu cầu đã cài [Homebrew](https://brew.sh). Nếu chưa có, chạy `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` trước.)*
+  - **Linux (Debian/Ubuntu)**: Mở Terminal và chạy:
+    ```sh
+    sudo apt update && sudo apt install ffmpeg
+    ```
 
 ## 🚀 Hướng dẫn Cài đặt & Chạy
 

@@ -23,9 +23,10 @@ def merge_and_normalize_audio(file_paths, output_path, delay_ms=1000):
 
     merged_audio.export(output_path, format="mp3")
 
-def comb(word):
+def comb(word, folder_path=None):
 	words = word.split()
-	folder_path = os.getcwd()
+	if folder_path is None:
+		folder_path = os.getcwd()
 
 	if len(words) < 2: return 0
 	print("\033[93mTrying a combining method\033[93m")
@@ -33,7 +34,7 @@ def comb(word):
 	raw_music = []
 	with alive_bar(len(words)) as bar:
 		for element in words:
-			save_path = f"{folder_path}\\{element}.mp3"
+			save_path = os.path.join(folder_path, f"{element}.mp3")
 
 			try:
 				Parser.define(element, save_path, 0, 0, 'english')
@@ -47,7 +48,8 @@ def comb(word):
 
 	if len(raw_music) == 0: return 0
 
-	merge_and_normalize_audio(raw_music, word + ".mp3", 0)
+	output_path = os.path.join(folder_path, f"{word}.mp3")
+	merge_and_normalize_audio(raw_music, output_path, 0)
 
 	for mp3_file in raw_music:
 		try:
