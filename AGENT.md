@@ -30,6 +30,7 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
     *   `start.bat`: Script tiện ích để chạy chương trình nhanh (`python main.py`).
     *   `compile.bat`: Dùng `pyinstaller` để đóng gói script thành file `.exe`.
     *   `Design/`: Thư mục chứa tài nguyên UI như logo và ảnh/video demo.
+    *   `.gitignore`: Cấu hình các file và thư mục không nên đưa lên GitHub (build, dist, cache, venv, mp3).
 
 ## 3. Lịch sử Thay đổi Gần đây (Changelog)
 1.  **Chuyển đổi ngôn ngữ dịch**: Đổi ngôn ngữ đích mặc định sang Tiếng Việt (`english-vietnamese`).
@@ -40,3 +41,4 @@ Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc dự án và
     *   Cập nhật `main.py` để hiển thị bản dịch rõ ràng, có cấu trúc (gom theo từ loại, đánh số định nghĩa Anh-Việt) kèm theo màu sắc terminal.
 5.  **Fix lỗi Encoding**: Thêm `sys.stdout.reconfigure(encoding='utf-8')` để tránh lỗi `UnicodeEncodeError` trên môi trường terminal Windows khi in ký tự tiếng Việt.
 6.  **Thêm lệnh `/cp` (Change Path)**: Cho phép người dùng đổi thư mục lưu file audio ngay trong phiên làm việc mà không cần sửa code. Hệ thống hiển thị đường dẫn hiện tại, nhận input đường dẫn mới, tự tạo thư mục nếu chưa tồn tại, và validate đầu vào.
+7.  **Cấu hình `.gitignore`**: Thiết lập danh sách các file/thư mục không nên up lên GitHub, bao gồm các thư mục build của PyInstaller (`build/`, `dist/`), file spec, cache của Python (`__pycache__/`), môi trường ảo (`venv/`) và các file audio `.mp3` được tải về.
