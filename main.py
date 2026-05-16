@@ -3,6 +3,9 @@ import Parser
 import os, time
 import playsound
 import combine
+from dotenv import load_dotenv
+
+load_dotenv()
 
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -13,7 +16,7 @@ def clear_screen():
 
 
 native = "vietnamese" 
-SAVE_FOLDER = "" #để trống thì mặc định lưu tại folder hiện tại
+SAVE_FOLDER = os.getenv('FOLDER_PATH') or "" #để trống thì mặc định lưu tại folder hiện tại
 # Khai báo các hằng số mã màu để dễ quản lý và tái sử dụng
 C_CYAN = "\033[96m"   # Xanh dương nhạt
 C_GREEN = "\033[92m"  # Xanh lá
